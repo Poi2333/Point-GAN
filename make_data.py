@@ -62,12 +62,23 @@ for root, dirs, files in path:
                 prob = area / sum_area
                 idx = np.random.choice(range(mesh_num), opt.pointnum, p = prob)
                 
+                center = np.zeros(3, dtype = 'float')
                 for i in range(opt.pointnum):
                     x = mesh[idx[i]][1] - mesh[idx[i]][0]
                     y = mesh[idx[i]][2] - mesh[idx[i]][0]
                     c1 = np.random.random()
                     c2 = np.random.random() * (1-c1)
                     point[i] = mesh[idx[i]][0] + c1*x + c2*y
+                    center = center + point[i]
+
+                center = center / opt.pointnum
+                max_axis = 0
+                for i in range(opt.pointnum):
+                    point[i] = point[i] - center
+                    for j in range(3):
+                        max_axis = max(max_axis, abs(point[i][j]))
+                
+                point = point / max_axis
 
                 filename = os.path.splitext(item)[0]
                 np.save(root + '/' + filename, point)
