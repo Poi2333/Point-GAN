@@ -44,15 +44,14 @@ if __name__ == '__main__':
             writer.add_scalar('Train/Loss', loss.item(), iter)
             iter = iter + 1
             print('{}/{}:loss: {}'.format(now, data_loader.get_TrainingSize(), loss.item()))
-
-            if (now // opt.batch_size) % 10 == 9:
-                torch.save(net.state_dict(), './network_model/model.para')
-                os.system('cp ./network_model/model.para ./network_model/epoch' + str(epoch) + 'It' + str(now) + '.para')
                 
         
         Epoch_loss = Epoch_loss/(data_loader.get_TrainingSize() / opt.batch_size)
         writer.add_scalar('Train/Epoch_loss', Epoch_loss, epoch)
         print('Epoch loss: {}'.format(Epoch_loss))
+
+        torch.save(net.state_dict(), './network_model/model.para')
+        os.system('cp ./network_model/model.para ./network_model/epoch' + str(epoch) + '.para')
 
 
 
