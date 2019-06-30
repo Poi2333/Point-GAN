@@ -33,7 +33,7 @@ for root, dirs, files in path:
             with open(root + '/' + item) as f:
                 head = 2
                 buf = f.readlines()
-                if buf[0][-1] != 'F':
+                if buf[0][-2] != 'F':
                     temp = buf[0][3:]
                     head = 1
                 else:
