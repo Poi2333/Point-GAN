@@ -17,20 +17,20 @@ def cal_k_nearnest(point):
     temp = torch.sqrt(temp)
 
     global order_message
-    order_message = torch.topk(temp, opt.k, dim = 2)[1]
+    order_message = torch.topk(temp, opt.k, dim = 2, largest=False)[1]
 
 #input batch * 10000 * size
 #return batch * 10000 * k * 2size
 def add_k_nearnest(point):
     temp = point.reshape(point.shape[0], point.shape[1], 1, point.shape[2])
     temp = temp.repeat(1, 1, opt.k, 1)
+    temp_order = order_message.permute([0, 2, 1])
     temp2 = torch.stack([ 
                 torch.stack([
-                    torch.stack([
-                        point[batch][order_message[batch][x][k]] for k in range(opt.k)
-                    ]) for x in range(opt.pointnum)
+                    point[batch][temp_order[batch][k]] for k in range(opt.k)
                 ]) for batch in range(point.shape[0])
             ])
+    temp2 = temp2.permute([0, 2, 1, 3])
     res = torch.cat((temp, temp2), dim = 3)
     return res
 
@@ -53,12 +53,10 @@ def find_nearnest(source, target):
     temp = torch.sum(temp, dim=3)
     temp = torch.sqrt(temp)
 
-    order = torch.argmax(temp, dim=2)
+    order = torch.argmin(temp, dim=2)
 
     res = torch.stack([
-        torch.stack([
-            target[batch][order[batch][k]] for k in range(opt.pointnum)
-        ]) for batch in range(source.shape[0])
+        target[batch][order[batch]] for batch in range(source.shape[0])
     ])
 
     return res
