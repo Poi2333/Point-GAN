@@ -81,4 +81,14 @@ class Net(nn.Module):
         temp = torch.sum(temp, dim = 2)
         temp = torch.sqrt(temp)
         temp = temp / opt.pointnum
-        return torch.sum(temp) / temp.shape[0]
+        res1 = torch.sum(temp) / temp.shape[0]
+
+        temp = functions.find_nearnest(out, y)
+        temp = temp - out
+        temp = temp * temp
+        temp = torch.sum(temp, dim = 2)
+        temp = torch.sqrt(temp)
+        temp = temp / opt.pointnum
+        res2 = torch.sum(temp) / temp.shape[0]
+
+        return res1 + res2
