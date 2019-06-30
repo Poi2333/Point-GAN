@@ -2,7 +2,7 @@ import os
 import numpy as np
 import options
 
-TrainingFile = 'ModelNet10'
+TrainingFile = 'ModelNet40'
 path = os.walk('./Data/' + TrainingFile)
 
 def distance(x, y):
@@ -34,7 +34,7 @@ for root, dirs, files in path:
                 head = 2
                 buf = f.readlines()
                 if buf[0][-2] != 'F':
-                    temp = buf[0][3:]
+                    temp = buf[0][3:].split()
                     head = 1
                 else:
                     temp = buf[1].split()
