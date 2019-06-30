@@ -31,8 +31,13 @@ for root, dirs, files in path:
             if item[-1] != 'f':
                 continue
             with open(root + '/' + item) as f:
+                head = 2
                 buf = f.readlines()
-                temp = buf[1].split()
+                if buf[0][-1] != 'F':
+                    temp = buf[0][3:]
+                    head = 1
+                else:
+                    temp = buf[1].split()
                 num = int(temp[0])
                 mesh_num = int(temp[1])
                 data = np.zeros((num, 3), dtype='float')
@@ -42,12 +47,12 @@ for root, dirs, files in path:
                 point = np.zeros((opt.pointnum, 3), dtype='float')
 
                 for i in range(num):
-                    temp = buf[2+i].split()
+                    temp = buf[head+i].split()
                     for j in range(3):
                         data[i][j] = float(temp[j])
                 
                 for i in range(mesh_num):
-                    temp = buf[i+2+num].split()
+                    temp = buf[i+head+num].split()
                     if int(temp[0]) != 3:
                         print('Error!')
                         exit(0)
